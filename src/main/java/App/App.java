@@ -12,7 +12,7 @@ public class App {
 
         // Build index and Populate it using the dataset (cran.all.1400) provided by user,
         // process to extract relevant data and then store it using index writer.
-        searchEngine.buildIndex(args);
+        searchEngine.buildIndex();
 
         // Extract and build queries and use Boolean and Term Query to search the index
         // Write out the scores and document ids in results file

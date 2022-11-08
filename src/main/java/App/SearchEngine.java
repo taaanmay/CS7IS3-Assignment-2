@@ -71,7 +71,7 @@ public class SearchEngine {
         }
     }
 
-    public void buildIndex(String[] args) throws IOException
+    public void buildIndex() throws IOException
     {
 
         // 1. Create fields using FieldType and other methods.
@@ -93,6 +93,8 @@ public class SearchEngine {
         IndexWriterConfig config = new IndexWriterConfig(analyzer);
         config.setOpenMode(IndexWriterConfig.OpenMode.CREATE);
         IndexWriter iwriter = new IndexWriter(directory, config);
+
+        parseFBI(iwriter,ft);
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Call to populate Index
@@ -132,6 +134,40 @@ public class SearchEngine {
 
     }
 
+    public void parseFBI(IndexWriter iwriter, FieldType ft){
+        ArrayList<Document> documents = new ArrayList<Document>();
+
+        String document = "";
+
+        try {
+            Path corpusPath = Paths.get("Documents/fbis/fb396001");
+            document = new String(Files.readAllBytes(corpusPath));
+            System.out.println(document);
+
+        } catch (IOException e) {
+            System.out.println("Error with the corpus splitting");
+            throw new RuntimeException(e);
+        }
+    }
+
+    Document processFBIDocuments(String item, FieldType fieldType) throws IOException {
+        // 1. Called by parseFBI() method
+        // 2. The query is received as an argument along with the field type
+        // 3. The query is split using regex on .T,.A,.W,.B and stored in a String array called fields
+        // 4. Each field is then added as a String Field using the in-built StringField() method to create documents
+        // 5. Document is then returned which will be added to the index writer later.
+
+        Document returnResult = new Document();
+
+        String[] fields = item.split(".[TAWB](\r\n|[\r\n])", -1);
+        returnResult.add(new StringField("index", fields[0].trim(), Field.Store.YES));
+        returnResult.add(new StringField("filename", fields[1].trim(), Field.Store.YES));
+        returnResult.add(new StringField("author(s)", fields[2].trim(), Field.Store.YES));
+        returnResult.add(new StringField("metadata", fields[3].trim(), Field.Store.YES));
+        returnResult.add(new Field("content", fields[4].trim(), fieldType));
+
+        return returnResult;
+    }
 
 
 
