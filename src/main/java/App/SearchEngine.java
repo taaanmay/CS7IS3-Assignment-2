@@ -158,9 +158,6 @@ public class SearchEngine {
 
     }
 
-    public void parseLATimes(){
-
-    }
 
     Document processFBIDocuments(String item, FieldType fieldType) throws IOException {
         // 1. Called by parseFBI() method
