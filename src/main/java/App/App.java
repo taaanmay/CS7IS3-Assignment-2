@@ -10,7 +10,7 @@ public class App {
         Scanner scanner = new Scanner(System.in);
         SearchEngine searchEngine = new SearchEngine(selectAlgorithm(scanner));
 
-        // Build index and Populate it using the dataset (cran.all.1400) provided by user,
+        // Build index and Populate it using the datasets,
         // process to extract relevant data and then store it using index writer.
         searchEngine.buildIndex();
 
