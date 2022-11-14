@@ -80,7 +80,6 @@ public class SearchEngine {
         // 4. When Index is built, create a searcher using the algorithm selected by the user - BM25, Classic, Boolean, LMDirichlet, DFISimilarity
         // 5. Return to App.java
 
-
         // Create a new field type which will store term vector information
         FieldType ft = new FieldType(TextField.TYPE_STORED);
         ft.setTokenized(true); //done as default
@@ -225,11 +224,6 @@ public class SearchEngine {
         writer.close();
 
     }
-
-
-
-
-
 
     public void shutdown() throws IOException {
         directory.close();

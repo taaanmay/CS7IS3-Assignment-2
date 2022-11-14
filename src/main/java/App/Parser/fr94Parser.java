@@ -21,7 +21,7 @@ public class fr94Parser {
         String docNumber, docTitle, docContent;
         for(File directory : directories){
             File[] files = directory.listFiles();
-            for(File file : files){
+            for(File file : files) {
                 org.jsoup.nodes.Document doc = Jsoup.parse(file, null, "");
                 Elements elements = doc.select("DOC");
                 for(Element element : elements){
