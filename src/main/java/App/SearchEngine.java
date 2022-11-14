@@ -150,15 +150,6 @@ public class SearchEngine {
         }
     }
 
-    public void parseLATimes(){
-
-    }
-
-    public void parseFT(){
-
-    }
-
-
     Document processFBIDocuments(String item, FieldType fieldType) throws IOException {
         // 1. Called by parseFBI() method
         // 2. The query is received as an argument along with the field type
