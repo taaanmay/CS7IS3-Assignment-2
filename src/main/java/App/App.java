@@ -16,7 +16,7 @@ public class App {
 
         // Extract and build queries and use Boolean and Term Query to search the index
         // Write out the scores and document ids in results file
-        searchEngine.runQueries();
+        //searchEngine.runQueries();
 
 
         // Shut down Search Engine after queries are run

@@ -1,4 +1,5 @@
 App/SearchEngine.class
 App/App.class
+App/IndexBulider.class
 App/SearchEngine$ScoringAlgorithm.class
 App/SearchEngine$1.class
