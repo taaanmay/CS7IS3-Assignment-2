@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Scanner;
 
 import App.Parser.FbisParser;
+import App.Parser.LAtimesParser;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.CharArraySet;
 import org.apache.lucene.analysis.TokenStream;
@@ -51,6 +52,7 @@ public class SearchEngine {
     private static String QUERY_FILE = "cran/cran.qry";
 
     private static String FBI_DIR = "Documents/fbis";
+    private static String LATIMES_DIR = "Documents/latimes";
 
     private Analyzer analyzer;
     private Directory directory;
@@ -60,6 +62,7 @@ public class SearchEngine {
     private static int MAX_RESULTS = 30;
 
     public FbisParser fbisParser;
+    public LAtimesParser lAtimesParser;
 
 
     public enum ScoringAlgorithm { BM25, Classic, Boolean, LMDirichlet, DFISimilarity}
@@ -69,7 +72,8 @@ public class SearchEngine {
     public SearchEngine(ScoringAlgorithm algorithm){
         this.analyzer = new EnglishAnalyzer();
         this.selectedAlgorithm = algorithm;
-        this.fbisParser = new FbisParser();
+        this.lAtimesParser = new LAtimesParser();
+//        this.fbisParser = new FbisParser();
         try {
             this.directory = FSDirectory.open(Paths.get(INDEX_DIRECTORY));
         } catch (IOException e) {
@@ -102,7 +106,8 @@ public class SearchEngine {
         List<Document> documents = new ArrayList<Document>();
 
         // Parse FBI Documents
-        documents = fbisParser.parseFbis(FBI_DIR);
+        documents = lAtimesParser.parseLAtimes(LATIMES_DIR);
+//        documents = fbisParser.parseFbis(FBI_DIR);
         // Print the second fbi document
         System.out.println("Document: \n"+documents.get(1) + "\n");
 
