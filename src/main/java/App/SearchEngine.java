@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import App.Parser.FbisParser;
+import App.Parser.LAtimesParser;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.CharArraySet;
 import org.apache.lucene.analysis.TokenStream;
@@ -49,12 +51,18 @@ public class SearchEngine {
     private static String RESULTS_DIR = "results/";
     private static String QUERY_FILE = "cran/cran.qry";
 
+    private static String FBI_DIR = "Documents/fbis";
+    private static String LATIMES_DIR = "Documents/latimes";
+
     private Analyzer analyzer;
     private Directory directory;
     private DirectoryReader ireader;
     private IndexSearcher isearcher;
 
     private static int MAX_RESULTS = 30;
+
+    public FbisParser fbisParser;
+    public LAtimesParser lAtimesParser;
 
 
     public enum ScoringAlgorithm { BM25, Classic, Boolean, LMDirichlet, DFISimilarity}
@@ -64,6 +72,8 @@ public class SearchEngine {
     public SearchEngine(ScoringAlgorithm algorithm){
         this.analyzer = new EnglishAnalyzer();
         this.selectedAlgorithm = algorithm;
+        this.lAtimesParser = new LAtimesParser();
+//        this.fbisParser = new FbisParser();
         try {
             this.directory = FSDirectory.open(Paths.get(INDEX_DIRECTORY));
         } catch (IOException e) {
@@ -80,7 +90,6 @@ public class SearchEngine {
         // 4. When Index is built, create a searcher using the algorithm selected by the user - BM25, Classic, Boolean, LMDirichlet, DFISimilarity
         // 5. Return to App.java
 
-
         // Create a new field type which will store term vector information
         FieldType ft = new FieldType(TextField.TYPE_STORED);
         ft.setTokenized(true); //done as default
@@ -94,16 +103,23 @@ public class SearchEngine {
         config.setOpenMode(IndexWriterConfig.OpenMode.CREATE);
         IndexWriter iwriter = new IndexWriter(directory, config);
 
-        parseFBI(iwriter,ft);
+        List<Document> documents = new ArrayList<Document>();
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Call to populate Index
-        //populateIndex(args, iwriter, ft);
+        // Parse FBI Documents
+        documents = lAtimesParser.parseLAtimes(LATIMES_DIR);
+//        documents = fbisParser.parseFbis(FBI_DIR);
+        // Print the second fbi document
+        System.out.println("Document: \n"+documents.get(1) + "\n");
 
+        if(documents.size() != 0){
 
-        //System.out.println("Built Index");
-        // close the writer
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            iwriter.addDocuments(documents); // Add FBI documents to Index Writer
+        }else{
+            System.out.println("No documents found to add");
+        }
+
+        System.out.println("Built Index");
+        //close the writer
         iwriter.close();
 
         // Call to create searcher (Function)
@@ -134,21 +150,21 @@ public class SearchEngine {
 
     }
 
-    public void parseFBI(IndexWriter iwriter, FieldType ft){
-        ArrayList<Document> documents = new ArrayList<Document>();
-
-        String document = "";
-
-        try {
-            Path corpusPath = Paths.get("Documents/fbis/fb396001");
-            document = new String(Files.readAllBytes(corpusPath));
-            System.out.println(document);
-
-        } catch (IOException e) {
-            System.out.println("Error with the corpus splitting");
-            throw new RuntimeException(e);
-        }
-    }
+//    public void parseFBI(IndexWriter iwriter, FieldType ft){
+//        ArrayList<Document> documents = new ArrayList<Document>();
+//
+//        String document = "";
+//
+//        try {
+//            Path corpusPath = Paths.get("Documents/fbis/fb396001");
+//            document = new String(Files.readAllBytes(corpusPath));
+//            System.out.println(document);
+//
+//        } catch (IOException e) {
+//            System.out.println("Error with the corpus splitting");
+//            throw new RuntimeException(e);
+//        }
+//    }
 
     Document processFBIDocuments(String item, FieldType fieldType) throws IOException {
         // 1. Called by parseFBI() method
@@ -225,11 +241,6 @@ public class SearchEngine {
         writer.close();
 
     }
-
-
-
-
-
 
     public void shutdown() throws IOException {
         directory.close();
