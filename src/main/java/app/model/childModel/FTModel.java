@@ -1,4 +1,4 @@
-package App.Model.ChildModel;
+package app.model.childModel;
 
 
 import lombok.*;

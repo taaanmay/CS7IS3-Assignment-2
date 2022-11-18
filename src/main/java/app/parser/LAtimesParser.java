@@ -1,6 +1,6 @@
-package App.Parser;
+package app.parser;
 
-import App.Model.ChildModel.LatimesModel;
+import app.model.childModel.LatimesModel;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.StringField;
@@ -56,5 +56,6 @@ public class LAtimesParser {
     public static void main(String[] args) throws IOException {
         LAtimesParser parser = new LAtimesParser();
         List<Document> documents = parser.parseLAtimes("./Documents/latimes");
+        System.out.println();
     }
 }

@@ -1,4 +1,4 @@
-package App.Parser;
+package app.parser;
 
 /**
  * @author Siuyun Yip
@@ -7,7 +7,7 @@ package App.Parser;
  */
 
 
-import App.Model.ChildModel.FbisModel;
+import app.model.childModel.FbisModel;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.StringField;

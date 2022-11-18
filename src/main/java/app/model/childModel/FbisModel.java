@@ -1,6 +1,6 @@
-package App.Model.ChildModel;
+package app.model.childModel;
 
-import App.Model.BaseModel;
+import app.model.BaseModel;
 import lombok.Data;
 
 /**

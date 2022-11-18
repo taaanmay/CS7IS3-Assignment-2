@@ -1,4 +1,4 @@
-package App.Parser;
+package app.parser;
 
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
@@ -12,7 +12,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class fr94Parser {
+public class Fr94Parser {
     private ArrayList<Document> doclist;
     public ArrayList<Document> parseFR94(String path) throws IOException {
         doclist = new ArrayList<>();

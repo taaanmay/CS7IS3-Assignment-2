@@ -1,4 +1,4 @@
-package App.Parser;
+package app.parser;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
@@ -7,9 +7,9 @@ import org.jsoup.select.Elements;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import App.Model.ChildModel.FTModel;
+import app.model.childModel.FTModel;
 
-public class ftParser {
+public class FtParser {
 
     private final static File FT_DIR = new File("Documents/ft");
     private static ArrayList<FTModel> ftDocsList = new ArrayList<>();

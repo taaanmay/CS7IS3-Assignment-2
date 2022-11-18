@@ -1,25 +1,17 @@
-package App;
+package app;
 
 // Imports
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
-import App.Parser.FbisParser;
-import App.Parser.LAtimesParser;
+import app.parser.FbisParser;
+import app.parser.LAtimesParser;
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.CharArraySet;
-import org.apache.lucene.analysis.TokenStream;
-import org.apache.lucene.analysis.core.LowerCaseFilter;
 import org.apache.lucene.analysis.en.EnglishAnalyzer;
-import org.apache.lucene.analysis.en.PorterStemFilter;
-import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.FieldType;
@@ -28,7 +20,6 @@ import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
-import org.apache.lucene.index.Term;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.search.*;
 import org.apache.lucene.search.similarities.BM25Similarity;
@@ -39,22 +30,13 @@ import org.apache.lucene.search.similarities.IndependenceStandardized;
 import org.apache.lucene.search.similarities.LMDirichletSimilarity;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
-import org.apache.lucene.analysis.core.StopFilter;
 
 public class SearchEngine {
 
 
     private ScoringAlgorithm selectedAlgorithm;
     // Define Directories
-    private static String INDEX_DIRECTORY = "index";
-    private String RESULTS_FILE = "results/out-";
-    private static String RESULTS_DIR = "results/";
     private static String QUERY_FILE = "cran/cran.qry";
-
-    private static String FBI_DIR = "Documents/fbis";
-    private static String LATIMES_DIR = "Documents/latimes";
-
-    private static String FT_DIR = "Documents/ft";
 
     private Analyzer analyzer;
     private Directory directory;
@@ -63,8 +45,8 @@ public class SearchEngine {
 
     private static int MAX_RESULTS = 30;
 
-    public FbisParser fbisParser;
-    public LAtimesParser lAtimesParser;
+    private FbisParser fbisParser;
+    private LAtimesParser lAtimesParser;
 
 
     public enum ScoringAlgorithm { BM25, Classic, Boolean, LMDirichlet, DFISimilarity}
@@ -77,7 +59,7 @@ public class SearchEngine {
         this.lAtimesParser = new LAtimesParser();
 //        this.fbisParser = new FbisParser();
         try {
-            this.directory = FSDirectory.open(Paths.get(INDEX_DIRECTORY));
+            this.directory = FSDirectory.open(Paths.get(Constant.INDEX_DIRECTORY));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -108,10 +90,10 @@ public class SearchEngine {
         List<Document> documents = new ArrayList<Document>();
 
         // Parse FBI Documents
-        documents = lAtimesParser.parseLAtimes(LATIMES_DIR);
+        documents = lAtimesParser.parseLAtimes(Constant.LATIMES_DIR);
 //        documents = fbisParser.parseFbis(FBI_DIR);
         // Print the second fbi document
-        System.out.println("Document: \n"+documents.get(1) + "\n");
+        System.out.println("Document: \n"+documents.get(2) + "\n");
 
         if(documents.size() != 0){
 
@@ -204,11 +186,11 @@ public class SearchEngine {
 
 
         // Create Results directory
-        File output = new File(RESULTS_DIR);
+        File output = new File(Constant.RESULTS_DIR);
         if (!output.exists()) {
             output.mkdir();
         }
-        PrintWriter writer = new PrintWriter(RESULTS_FILE+selectedAlgorithm+".txt", "UTF-8");
+        PrintWriter writer = new PrintWriter(Constant.RESULTS_FILE+selectedAlgorithm+".txt", "UTF-8");
 
 
 //        String queryFile = new String(Files.readAllBytes(Paths.get(QUERY_FILE)));
