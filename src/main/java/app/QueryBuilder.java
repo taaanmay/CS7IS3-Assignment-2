@@ -1,6 +1,5 @@
-package app.parser;
+package app;
 
-import app.Constant;
 import app.model.childModel.TopicModel;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
@@ -19,7 +18,7 @@ import java.util.List;
  * @version 1.0
  * @date 2022/11/18 11:48
  */
-public class QueryParser {
+public class QueryBuilder {
 
     public List<String> parseQuery(String queryPath) throws IOException {
         File file = new File(queryPath);
@@ -81,8 +80,8 @@ public class QueryParser {
     }
 
     public static void main(String[] args) throws IOException {
-        QueryParser queryParser = new QueryParser();
-        queryParser.parseQuery("topics");
+        QueryBuilder queryBuilder = new QueryBuilder();
+        queryBuilder.parseQuery("topics");
         System.out.println();
     }
 }
