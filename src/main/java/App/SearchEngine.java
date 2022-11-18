@@ -54,6 +54,8 @@ public class SearchEngine {
     private static String FBI_DIR = "Documents/fbis";
     private static String LATIMES_DIR = "Documents/latimes";
 
+    private static String FT_DIR = "Documents/ft";
+
     private Analyzer analyzer;
     private Directory directory;
     private DirectoryReader ireader;

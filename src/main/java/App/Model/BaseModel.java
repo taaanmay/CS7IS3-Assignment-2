@@ -8,7 +8,7 @@ import lombok.*;
 @Setter
 @ToString
 @NoArgsConstructor
-public class BaseModel {
+public class   BaseModel {
     public String docNo;
     public String date;
     public String title;
