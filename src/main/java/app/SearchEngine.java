@@ -1,20 +1,21 @@
 package app;
 
 // Imports
-import java.io.IOException;
-import java.nio.file.Paths;
-import java.util.List;
 
-import app.parser.FbisParser;
-import app.parser.Fr94Parser;
-import app.parser.FtParser;
-import app.parser.LAtimesParser;
+import app.Parser.FbisParser;
+import app.Parser.Fr94Parser;
+import app.Parser.FtParser;
+import app.Parser.LAtimesParser;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.en.EnglishAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.search.similarities.*;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
+
+import java.io.IOException;
+import java.nio.file.Paths;
+import java.util.List;
 
 import static app.Constant.*;
 
@@ -72,7 +73,7 @@ public class SearchEngine {
         List<Document> documentsFBI = fbisParser.parseFbis(FBI_DIR);
         List<Document> documentsFR94 = fr94Parser.parseFR94(FR94_DIR);
 //        ftParser.parseAllFTFiles(FT_DIR.getAbsolutePath());
-        List<Document> documentsFT = ftParser.parseAllFTFiles(FT_DIR);
+        List<Document> documentsFT = ftParser.returnParsedDocuments(FT_DIR);
         List<Document> documentsLAtimes = lAtimesParser.parseLAtimes(LATIMES_DIR);
         indexBulider.CreateIndex(documentsFBI, analyzer, similarity);
         indexBulider.CreateIndex(documentsFR94, analyzer, similarity);

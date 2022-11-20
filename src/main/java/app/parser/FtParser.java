@@ -1,4 +1,4 @@
-package app.parser;
+package app.Parser;
 
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
@@ -60,11 +60,13 @@ public class FtParser {
             }
         }
 
-        return addDocument(ftDocsList);
+        return ftDoc;
     }
 
-    private List<Document> addDocument(List<FTModel> ftModels) {
-        for (FTModel ftModel : ftModels) {
+    private List<Document> returnParsedDocuments(String path) throws IOException{
+        parseAllFTFiles(path);
+
+        for (FTModel ftModel : ftDocsList) {
             Document document = new Document();
             document.add(new StringField("docNumber", ftModel.getDocNo(), Field.Store.YES));
             document.add(new TextField("docTitle", ftModel.getTitle(), Field.Store.YES));
