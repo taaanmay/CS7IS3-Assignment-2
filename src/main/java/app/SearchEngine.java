@@ -82,6 +82,7 @@ public class SearchEngine {
     }
 
     public void runQueries() throws Exception {
+        System.out.println("Running Queries");
         queryResolver.runQuery(analyzer, similarity);
     }
 
