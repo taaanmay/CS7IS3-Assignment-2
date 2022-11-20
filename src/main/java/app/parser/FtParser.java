@@ -1,4 +1,4 @@
-package app.Parser;
+package app.parser;
 
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
@@ -15,7 +15,7 @@ import java.util.List;
 
 import app.model.childModel.FTModel;
 
-public class FtParser {
+public class FTParser {
 
     private final static File FT_DIR = new File("Documents/ft");
     private static ArrayList<FTModel> ftDocsList = new ArrayList<>();
@@ -23,7 +23,6 @@ public class FtParser {
 
     private static void parseFTFile(String file) throws IOException {
         System.out.println("Parsing ft documents...");
-        String docNumber, docTitle, docContent, docAuthor, headlinestring, docDate;
         org.jsoup.nodes.Document doc = Jsoup.parse(file, "utf-8");
         Elements elements = doc.select("DOC");
         for(Element element : elements){
@@ -63,9 +62,8 @@ public class FtParser {
         return ftDoc;
     }
 
-    private List<Document> returnParsedDocuments(String path) throws IOException{
+    public List<Document> returnParsedDocuments(String path) throws IOException{
         parseAllFTFiles(path);
-
         for (FTModel ftModel : ftDocsList) {
             Document document = new Document();
             document.add(new StringField("docNumber", ftModel.getDocNo(), Field.Store.YES));

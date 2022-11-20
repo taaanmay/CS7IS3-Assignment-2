@@ -2,10 +2,10 @@ package app;
 
 // Imports
 
-import app.Parser.FbisParser;
-import app.Parser.Fr94Parser;
-import app.Parser.FtParser;
-import app.Parser.LAtimesParser;
+import app.parser.FbisParser;
+import app.parser.Fr94Parser;
+import app.parser.FTParser;
+import app.parser.LAtimesParser;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.en.EnglishAnalyzer;
 import org.apache.lucene.document.Document;
@@ -66,7 +66,7 @@ public class SearchEngine {
         // Instantiate Parsers
         FbisParser fbisParser = new FbisParser();
         Fr94Parser fr94Parser = new Fr94Parser();
-        FtParser ftParser = new FtParser();
+        FTParser ftParser = new FTParser();
         LAtimesParser lAtimesParser = new LAtimesParser();
 
         // Parse Documents
