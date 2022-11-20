@@ -11,10 +11,13 @@ import org.jsoup.select.Elements;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Fr94Parser {
-    private ArrayList<Document> doclist;
-    public ArrayList<Document> parseFR94(String path) throws IOException {
+
+    private List<Document> doclist;
+
+    public List<Document> parseFR94(String path) throws IOException {
         doclist = new ArrayList<>();
         System.out.println("Parsing fr94 documents...");
         File[] directories = new File(path).listFiles(File::isDirectory);

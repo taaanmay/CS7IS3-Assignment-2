@@ -1,11 +1,8 @@
 package app;
 
 // Imports
-import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 
 import app.parser.FbisParser;
@@ -15,15 +12,6 @@ import app.parser.LAtimesParser;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.en.EnglishAnalyzer;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.document.Field;
-import org.apache.lucene.document.FieldType;
-import org.apache.lucene.document.StringField;
-import org.apache.lucene.document.TextField;
-import org.apache.lucene.index.DirectoryReader;
-import org.apache.lucene.index.IndexWriter;
-import org.apache.lucene.index.IndexWriterConfig;
-import org.apache.lucene.queryparser.classic.ParseException;
-import org.apache.lucene.search.*;
 import org.apache.lucene.search.similarities.*;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
@@ -40,13 +28,8 @@ public class SearchEngine {
     private Analyzer analyzer;
     private Similarity similarity;
     private Directory directory;
-    private DirectoryReader ireader;
-    private IndexSearcher isearcher;
 
-    private static int MAX_RESULTS = 30;
-
-    private FbisParser fbisParser;
-    private LAtimesParser lAtimesParser;
+    private QueryResolver queryResolver;
 
 
     public enum ScoringAlgorithm { BM25, Classic, Boolean, LMDirichlet, DFISimilarity}
@@ -56,7 +39,8 @@ public class SearchEngine {
     public SearchEngine(ScoringAlgorithm algorithm){
         this.analyzer = new EnglishAnalyzer();
         this.selectedAlgorithm = algorithm;
-        this.lAtimesParser = new LAtimesParser();
+        this.queryResolver = new QueryResolver();
+
         if(selectedAlgorithm == ScoringAlgorithm.BM25){
             this.similarity = new BM25Similarity();
         } else if(selectedAlgorithm == ScoringAlgorithm.Classic){
@@ -87,20 +71,22 @@ public class SearchEngine {
         // Parse Documents
         List<Document> documentsFBI = fbisParser.parseFbis(FBI_DIR);
         List<Document> documentsFR94 = fr94Parser.parseFR94(FR94_DIR);
-        //ftParser.parseAllFTFiles(FT_DIR.getAbsolutePath());
-        //List<Document> documentsFT = ftParser.getFtDocsList();
+//        ftParser.parseAllFTFiles(FT_DIR.getAbsolutePath());
+        List<Document> documentsFT = ftParser.parseAllFTFiles(FT_DIR);
         List<Document> documentsLAtimes = lAtimesParser.parseLAtimes(LATIMES_DIR);
         indexBulider.CreateIndex(documentsFBI, analyzer, similarity);
         indexBulider.CreateIndex(documentsFR94, analyzer, similarity);
         indexBulider.CreateIndex(documentsLAtimes, analyzer, similarity);
-        //indexBulider.CreateIndex(documentsFT, analyzer, similarity);
+        indexBulider.CreateIndex(documentsFT, analyzer, similarity);
     }
+
+    public void runQueries() throws Exception {
+        queryResolver.runQuery(analyzer, similarity);
+    }
+
 
 
     public void shutdown() throws IOException {
         directory.close();
     }
-
-
-
 }

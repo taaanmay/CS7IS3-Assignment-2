@@ -10,7 +10,7 @@ public interface Constant {
 
     String RESULTS_FILE = "results/out-";
 
-    String RESULTS_DIR = "results/";
+    String RESULTS_DIR = "results/result.txt";
 
     String FBI_DIR = "Documents/fbis";
     
@@ -21,4 +21,11 @@ public interface Constant {
     String FT_DIR = "Documents/ft";
 
     String STOPWORD_FILE = "stopwords.txt";
+
+    String TOPICS = "topics";
+
+    String[] searchFields = {"docTitle", "docAuthor", "docContent"};
+
+    Integer MAX_CLAUSE = 1000;
+
 }

@@ -22,7 +22,7 @@ public class IndexBulider {
     public void CreateIndex(List<Document> documentList, Analyzer analyzer, Similarity similarity) throws IOException {
         Directory dir = FSDirectory.open(Paths.get(INDEX_DIRECTORY));
         IndexWriterConfig indexWriterConfig = new IndexWriterConfig(analyzer);
-        indexWriterConfig.setOpenMode(IndexWriterConfig.OpenMode.CREATE);
+        indexWriterConfig.setOpenMode(IndexWriterConfig.OpenMode.CREATE_OR_APPEND);
         indexWriterConfig.setSimilarity(similarity);
         IndexWriter indexWriter = new IndexWriter(dir, indexWriterConfig);
         for(Document document : documentList) {

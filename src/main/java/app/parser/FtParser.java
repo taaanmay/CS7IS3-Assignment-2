@@ -1,5 +1,9 @@
 package app.parser;
 
+import org.apache.lucene.document.Document;
+import org.apache.lucene.document.Field;
+import org.apache.lucene.document.StringField;
+import org.apache.lucene.document.TextField;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -7,12 +11,15 @@ import org.jsoup.select.Elements;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
+
 import app.model.childModel.FTModel;
 
 public class FtParser {
 
     private final static File FT_DIR = new File("Documents/ft");
     private static ArrayList<FTModel> ftDocsList = new ArrayList<>();
+    private List<Document> ftDoc = new ArrayList<>();
 
     private static void parseFTFile(String file) throws IOException {
         System.out.println("Parsing ft documents...");
@@ -32,8 +39,10 @@ public class FtParser {
 
             ftDocsList.add(ftdoc);
         }
+
     }
-    public static void parseAllFTFiles(String path) throws IOException {
+
+    public List<Document> parseAllFTFiles(String path) throws IOException {
 
         File root = new File(path);
         File[] list = root.listFiles();
@@ -50,6 +59,21 @@ public class FtParser {
                 }
             }
         }
+
+        return addDocument(ftDocsList);
+    }
+
+    private List<Document> addDocument(List<FTModel> ftModels) {
+        for (FTModel ftModel : ftModels) {
+            Document document = new Document();
+            document.add(new StringField("docNumber", ftModel.getDocNo(), Field.Store.YES));
+            document.add(new TextField("docTitle", ftModel.getTitle(), Field.Store.YES));
+            document.add(new TextField("docAuthor", ftModel.getAuthor(), Field.Store.YES));
+            document.add(new TextField("docContent", ftModel.getContent(), Field.Store.YES));
+            ftDoc.add(document);
+        }
+
+        return ftDoc;
     }
 
     public ArrayList<FTModel> getFtDocsList() throws IOException {
@@ -58,7 +82,8 @@ public class FtParser {
     }
 
     public static void main(String Args[]) throws IOException {
-        parseAllFTFiles(FT_DIR.getAbsolutePath());
+        FtParser ftParser = new FtParser();
+        ftParser.parseAllFTFiles(FT_DIR.getAbsolutePath());
         System.out.println(ftDocsList.size());
     }
 

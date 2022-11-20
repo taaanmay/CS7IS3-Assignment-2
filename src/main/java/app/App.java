@@ -1,12 +1,10 @@
 package app;
 
-import java.io.IOException;
 import java.util.Scanner;
 
-import org.apache.lucene.queryparser.classic.ParseException;
 public class App {
 
-    public static void main(String[] args) throws IOException, ParseException {
+    public static void main(String[] args) throws Exception {
         Scanner scanner = new Scanner(System.in);
         SearchEngine searchEngine = new SearchEngine(selectAlgorithm(scanner));
 
@@ -16,7 +14,7 @@ public class App {
 
         // Extract and build queries and use Boolean and Term Query to search the index
         // Write out the scores and document ids in results file
-        //searchEngine.runQueries();
+        searchEngine.runQueries();
 
 
         // Shut down Search Engine after queries are run
@@ -59,9 +57,4 @@ public class App {
         }
         return algorithm;
     }
-
-
-
-
-
 }
