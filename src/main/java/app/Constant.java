@@ -13,7 +13,9 @@ public interface Constant {
     String RESULTS_DIR = "results/";
 
     String FBI_DIR = "Documents/fbis";
-
+    
+    String FR94_DIR = "Documents/fr94";
+    
     String LATIMES_DIR = "Documents/latimes";
 
     String FT_DIR = "Documents/ft";
