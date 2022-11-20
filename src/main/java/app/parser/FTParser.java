@@ -82,7 +82,7 @@ public class FTParser {
     }
 
     public static void main(String Args[]) throws IOException {
-        FtParser ftParser = new FtParser();
+        FTParser ftParser = new FTParser();
         ftParser.parseAllFTFiles(FT_DIR.getAbsolutePath());
         System.out.println(ftDocsList.size());
     }
