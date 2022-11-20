@@ -20,5 +20,7 @@ public interface Constant {
 
     String FT_DIR = "Documents/ft";
 
+    String FR94_DIR = "Documents/fr94";
+
     String STOPWORD_FILE = "stopwords.txt";
 }
