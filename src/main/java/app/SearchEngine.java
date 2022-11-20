@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import app.parser.FbisParser;
+import app.parser.Fr94Parser;
+import app.parser.FtParser;
 import app.parser.LAtimesParser;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.en.EnglishAnalyzer;
@@ -22,14 +24,11 @@ import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.search.*;
-import org.apache.lucene.search.similarities.BM25Similarity;
-import org.apache.lucene.search.similarities.BooleanSimilarity;
-import org.apache.lucene.search.similarities.ClassicSimilarity;
-import org.apache.lucene.search.similarities.DFISimilarity;
-import org.apache.lucene.search.similarities.IndependenceStandardized;
-import org.apache.lucene.search.similarities.LMDirichletSimilarity;
+import org.apache.lucene.search.similarities.*;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
+
+import static app.Constant.*;
 
 public class SearchEngine {
 
@@ -39,6 +38,7 @@ public class SearchEngine {
     private static String QUERY_FILE = "cran/cran.qry";
 
     private Analyzer analyzer;
+    private Similarity similarity;
     private Directory directory;
     private DirectoryReader ireader;
     private IndexSearcher isearcher;
@@ -46,8 +46,8 @@ public class SearchEngine {
     private static int MAX_RESULTS = 30;
 
     private FbisParser fbisParser;
-    private Fr94Parser fr94Parser;
     private LAtimesParser lAtimesParser;
+
 
     public enum ScoringAlgorithm { BM25, Classic, Boolean, LMDirichlet, DFISimilarity}
 
@@ -57,6 +57,17 @@ public class SearchEngine {
         this.analyzer = new EnglishAnalyzer();
         this.selectedAlgorithm = algorithm;
         this.lAtimesParser = new LAtimesParser();
+        if(selectedAlgorithm == ScoringAlgorithm.BM25){
+            this.similarity = new BM25Similarity();
+        } else if(selectedAlgorithm == ScoringAlgorithm.Classic){
+            this.similarity = new ClassicSimilarity();
+        } else if(selectedAlgorithm == ScoringAlgorithm.Boolean) {
+            this.similarity = new BooleanSimilarity();
+        } else if(selectedAlgorithm == ScoringAlgorithm.DFISimilarity) {
+            //similarity = new DFISimilarity();
+        } else if(selectedAlgorithm == ScoringAlgorithm.LMDirichlet) {
+            this.similarity = new LMDirichletSimilarity();
+        }
 //        this.fbisParser = new FbisParser();
         try {
             this.directory = FSDirectory.open(Paths.get(Constant.INDEX_DIRECTORY));
@@ -65,74 +76,92 @@ public class SearchEngine {
         }
     }
 
-    public void buildIndex() throws IOException
-    {
-
-        // 1. Create fields using FieldType and other methods.
-        // 2. Create and configure an index writer - 'iwriter'
-        // 3. Call a method called populateIndex() to build index using corpus, index writer and field types
-        // 4. When Index is built, create a searcher using the algorithm selected by the user - BM25, Classic, Boolean, LMDirichlet, DFISimilarity
-        // 5. Return to App.java
-
-        // Create a new field type which will store term vector information
-        FieldType ft = new FieldType(TextField.TYPE_STORED);
-        ft.setTokenized(true); //done as default
-        ft.setStoreTermVectors(true);
-        ft.setStoreTermVectorPositions(true);
-        ft.setStoreTermVectorOffsets(true);
-        ft.setStoreTermVectorPayloads(true);
-
-        // create and configure an index writer
-        IndexWriterConfig config = new IndexWriterConfig(analyzer);
-        config.setOpenMode(IndexWriterConfig.OpenMode.CREATE);
-        IndexWriter iwriter = new IndexWriter(directory, config);
-
-        List<Document> documents = new ArrayList<Document>();
-
-        // Parse FBI Documents
-        documents = lAtimesParser.parseLAtimes(Constant.LATIMES_DIR);
-//        documents = fbisParser.parseFbis(FBI_DIR);
-        // Print the second fbi document
-        System.out.println("Document: \n"+documents.get(2) + "\n");
-
-        if(documents.size() != 0){
-
-            iwriter.addDocuments(documents); // Add FBI documents to Index Writer
-        }else{
-            System.out.println("No documents found to add");
-        }
-
-        System.out.println("Built Index");
-        //close the writer
-        iwriter.close();
-
-        // Call to create searcher (Function)
-        try {
-            ireader = DirectoryReader.open(directory);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        // New Index Searcher
-        isearcher = new IndexSearcher(ireader);
-        switch (selectedAlgorithm) {
-            case BM25:
-                isearcher.setSimilarity(new BM25Similarity());
-                break;
-            case Classic:
-                isearcher.setSimilarity(new ClassicSimilarity());
-                break;
-            case DFISimilarity:
-                isearcher.setSimilarity(new DFISimilarity(new IndependenceStandardized()));
-                break;
-            case LMDirichlet:
-                isearcher.setSimilarity(new LMDirichletSimilarity());
-            case Boolean:
-                isearcher.setSimilarity(new BooleanSimilarity());
-
-        }
-
+    public void buildIndex() throws IOException{
+        IndexBulider indexBulider = new IndexBulider();
+        File FT_DIR = new File("Documents/ft");
+        FbisParser fbisParser = new FbisParser();
+        Fr94Parser fr94Parser = new Fr94Parser();
+        FtParser ftParser = new FtParser();
+        LAtimesParser lAtimesParser = new LAtimesParser();
+        List<Document> documentsFBI = fbisParser.parseFbis(FBI_DIR);
+        List<Document> documentsFR94 = fr94Parser.parseFR94(FR94_DIR);
+        //ftParser.parseAllFTFiles(FT_DIR.getAbsolutePath());
+        //List<Document> documentsFT = ftParser.getFtDocsList();
+        List<Document> documentsLAtimes = lAtimesParser.parseLAtimes(LATIMES_DIR);
+        indexBulider.CreateIndex(documentsFBI, analyzer, similarity);
+        indexBulider.CreateIndex(documentsFR94, analyzer, similarity);
+        indexBulider.CreateIndex(documentsLAtimes, analyzer, similarity);
     }
+
+
+//    public void buildIndex() throws IOException
+//    {
+//
+//        // 1. Create fields using FieldType and other methods.
+//        // 2. Create and configure an index writer - 'iwriter'
+//        // 3. Call a method called populateIndex() to build index using corpus, index writer and field types
+//        // 4. When Index is built, create a searcher using the algorithm selected by the user - BM25, Classic, Boolean, LMDirichlet, DFISimilarity
+//        // 5. Return to App.java
+//
+//        // Create a new field type which will store term vector information
+//        FieldType ft = new FieldType(TextField.TYPE_STORED);
+//        ft.setTokenized(true); //done as default
+//        ft.setStoreTermVectors(true);
+//        ft.setStoreTermVectorPositions(true);
+//        ft.setStoreTermVectorOffsets(true);
+//        ft.setStoreTermVectorPayloads(true);
+//
+//        // create and configure an index writer
+//        IndexWriterConfig config = new IndexWriterConfig(analyzer);
+//        config.setOpenMode(IndexWriterConfig.OpenMode.CREATE);
+//        IndexWriter iwriter = new IndexWriter(directory, config);
+//
+//        List<Document> documents = new ArrayList<Document>();
+//
+//        // Parse FBI Documents
+//        documents = lAtimesParser.parseLAtimes(Constant.LATIMES_DIR);
+////        documents = fbisParser.parseFbis(FBI_DIR);
+//        // Print the second fbi document
+//        System.out.println("Document: \n"+documents.get(2) + "\n");
+//
+//        if(documents.size() != 0){
+//
+//            iwriter.addDocuments(documents); // Add FBI documents to Index Writer
+//        }else{
+//            System.out.println("No documents found to add");
+//        }
+//
+//        System.out.println("Built Index");
+//        //close the writer
+//        iwriter.close();
+//
+//        // Call to create searcher (Function)
+//        try {
+//            ireader = DirectoryReader.open(directory);
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
+//
+//        // New Index Searcher
+//        isearcher = new IndexSearcher(ireader);
+//        switch (selectedAlgorithm) {
+//            case BM25:
+//                isearcher.setSimilarity(new BM25Similarity());
+//                break;
+//            case Classic:
+//                isearcher.setSimilarity(new ClassicSimilarity());
+//                break;
+//            case DFISimilarity:
+//                isearcher.setSimilarity(new DFISimilarity(new IndependenceStandardized()));
+//                break;
+//            case LMDirichlet:
+//                isearcher.setSimilarity(new LMDirichletSimilarity());
+//            case Boolean:
+//                isearcher.setSimilarity(new BooleanSimilarity());
+//
+//        }
+//
+//    }
 
 //    public void parseFBI(IndexWriter iwriter, FieldType ft){
 //        ArrayList<Document> documents = new ArrayList<Document>();
@@ -157,6 +186,19 @@ public class SearchEngine {
         // 4. Each field is then added as a String Field using the in-built StringField() method to create documents
         // 5. Document is then returned which will be added to the index writer later.
 
+        Document returnResult = new Document();
+
+        String[] fields = item.split(".[TAWB](\r\n|[\r\n])", -1);
+        returnResult.add(new StringField("index", fields[0].trim(), Field.Store.YES));
+        returnResult.add(new StringField("filename", fields[1].trim(), Field.Store.YES));
+        returnResult.add(new StringField("author(s)", fields[2].trim(), Field.Store.YES));
+        returnResult.add(new StringField("metadata", fields[3].trim(), Field.Store.YES));
+        returnResult.add(new Field("content", fields[4].trim(), fieldType));
+
+        return returnResult;
+    }
+
+    Document processFr94Documents(String item, FieldType fieldType) throws IOException {
         Document returnResult = new Document();
 
         String[] fields = item.split(".[TAWB](\r\n|[\r\n])", -1);
