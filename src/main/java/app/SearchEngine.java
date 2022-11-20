@@ -46,8 +46,8 @@ public class SearchEngine {
     private static int MAX_RESULTS = 30;
 
     private FbisParser fbisParser;
+    private Fr94Parser fr94Parser;
     private LAtimesParser lAtimesParser;
-
 
     public enum ScoringAlgorithm { BM25, Classic, Boolean, LMDirichlet, DFISimilarity}
 
