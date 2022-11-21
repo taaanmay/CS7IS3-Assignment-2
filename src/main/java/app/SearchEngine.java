@@ -69,17 +69,19 @@ public class SearchEngine {
         FTParser ftParser = new FTParser();
         LAtimesParser lAtimesParser = new LAtimesParser();
 
-        // Parse Documents
-        List<Document> documentsFT = ftParser.parseFTDocs(FT_DIR);
-        List<Document> documentsFBI = fbisParser.parseFbis(FBI_DIR);
-        List<Document> documentsFR94 = fr94Parser.parseFR94(FR94_DIR);
-//        ftParser.parseAllFTFiles(FT_DIR.getAbsolutePath());
+        List<Document> parsedDocument = ftParser.parseFTDocs(FT_DIR);
+        indexBulider.CreateIndex(parsedDocument, analyzer, similarity);
 
-        List<Document> documentsLAtimes = lAtimesParser.parseLAtimes(LATIMES_DIR);
-        indexBulider.CreateIndex(documentsFBI, analyzer, similarity);
-        indexBulider.CreateIndex(documentsFR94, analyzer, similarity);
-        indexBulider.CreateIndex(documentsLAtimes, analyzer, similarity);
-        indexBulider.CreateIndex(documentsFT, analyzer, similarity);
+        parsedDocument = fbisParser.parseFbis(FBI_DIR);
+        indexBulider.CreateIndex(parsedDocument, analyzer, similarity);
+
+        parsedDocument = fr94Parser.parseFR94(FR94_DIR);
+        indexBulider.CreateIndex(parsedDocument, analyzer, similarity);
+
+        parsedDocument = lAtimesParser.parseLAtimes(LATIMES_DIR);
+        indexBulider.CreateIndex(parsedDocument, analyzer, similarity);
+
+
     }
 
     public void runQueries() throws Exception {
