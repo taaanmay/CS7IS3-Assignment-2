@@ -4,12 +4,12 @@
 /Users/tanmay/Documents/Coding/Spring Boot/CS7IS3-Assignment-2/src/main/java/app/parser/FbisParser.java
 /Users/tanmay/Documents/Coding/Spring Boot/CS7IS3-Assignment-2/src/main/java/app/QueryResolver.java
 /Users/tanmay/Documents/Coding/Spring Boot/CS7IS3-Assignment-2/src/main/java/app/IndexBulider.java
+/Users/tanmay/Documents/Coding/Spring Boot/CS7IS3-Assignment-2/src/main/java/app/parser/FTParser.java
 /Users/tanmay/Documents/Coding/Spring Boot/CS7IS3-Assignment-2/src/main/java/app/QueryBuilder.java
 /Users/tanmay/Documents/Coding/Spring Boot/CS7IS3-Assignment-2/src/main/java/app/Constant.java
 /Users/tanmay/Documents/Coding/Spring Boot/CS7IS3-Assignment-2/src/main/java/app/model/childModel/TopicModel.java
 /Users/tanmay/Documents/Coding/Spring Boot/CS7IS3-Assignment-2/src/main/java/app/SearchEngine.java
 /Users/tanmay/Documents/Coding/Spring Boot/CS7IS3-Assignment-2/src/main/java/app/model/BaseModel.java
-/Users/tanmay/Documents/Coding/Spring Boot/CS7IS3-Assignment-2/src/main/java/app/parser/FtParser.java
 /Users/tanmay/Documents/Coding/Spring Boot/CS7IS3-Assignment-2/src/main/java/app/parser/Fr94Parser.java
 /Users/tanmay/Documents/Coding/Spring Boot/CS7IS3-Assignment-2/src/main/java/app/model/childModel/FTModel.java
 /Users/tanmay/Documents/Coding/Spring Boot/CS7IS3-Assignment-2/src/main/java/app/App.java

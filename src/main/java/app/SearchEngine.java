@@ -70,10 +70,11 @@ public class SearchEngine {
         LAtimesParser lAtimesParser = new LAtimesParser();
 
         // Parse Documents
+        List<Document> documentsFT = ftParser.parseFTDocs(FT_DIR);
         List<Document> documentsFBI = fbisParser.parseFbis(FBI_DIR);
         List<Document> documentsFR94 = fr94Parser.parseFR94(FR94_DIR);
 //        ftParser.parseAllFTFiles(FT_DIR.getAbsolutePath());
-        List<Document> documentsFT = ftParser.returnParsedDocuments(FT_DIR);
+
         List<Document> documentsLAtimes = lAtimesParser.parseLAtimes(LATIMES_DIR);
         indexBulider.CreateIndex(documentsFBI, analyzer, similarity);
         indexBulider.CreateIndex(documentsFR94, analyzer, similarity);

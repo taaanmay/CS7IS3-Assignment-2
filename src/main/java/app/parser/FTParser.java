@@ -17,53 +17,43 @@ import app.model.childModel.FTModel;
 
 public class FTParser {
 
-    private final static File FT_DIR = new File("Documents/ft");
+//    private final static File FT_DIR = new File("Documents/ft");
     private static ArrayList<FTModel> ftDocsList = new ArrayList<>();
     private List<Document> ftDoc = new ArrayList<>();
 
-    private static void parseFTFile(String file) throws IOException {
-        System.out.println("Parsing ft documents...");
-        org.jsoup.nodes.Document doc = Jsoup.parse(file, "utf-8");
-        Elements elements = doc.select("DOC");
-        for(Element element : elements){
-            FTModel ftdoc = new FTModel();
+    private List<Document> doclist;
 
-            String str = element.select("HEADLINE").text();
-            String[] arrOfStr = str.split("/", 2);
-            ftdoc.setDate(arrOfStr[0].split(" ", 2)[1]);
-            ftdoc.setTitle(arrOfStr[1]);
-            ftdoc.setAuthor(element.select("BYLINE").text());
-            ftdoc.setDocNo(element.select("DOCNO").text());
-            ftdoc.setContent(element.select("TEXT").text());
+    public List<Document> parseFTDocs(String path) throws IOException {
+        doclist = new ArrayList<>();
+        System.out.println("Parsing FT documents...");
+        File[] directories = new File(path).listFiles(File::isDirectory);
 
-            ftDocsList.add(ftdoc);
-        }
+        for(File directory : directories){
+            File[] files = directory.listFiles();
+            for(File file : files) {
+                org.jsoup.nodes.Document doc = Jsoup.parse(file, null, "");
+                Elements elements = doc.select("DOC");
+                for(Element element : elements){
+                    FTModel ftdoc = new FTModel();
 
-    }
+                    String headlineText = element.select("HEADLINE").text();
+//                    String[] arrOfStr = str.split("/", 2);
+//                    ftdoc.setDate(arrOfStr[0].split(" ", 2)[1]);
+                    ftdoc.setTitle(headlineText);
+                    ftdoc.setAuthor(element.select("BYLINE").text());
+                    ftdoc.setDocNo(element.select("DOCNO").text());
+                    ftdoc.setContent(element.select("TEXT").text());
 
-    public List<Document> parseAllFTFiles(String path) throws IOException {
-
-        File root = new File(path);
-        File[] list = root.listFiles();
-
-        if (list != null) {
-            for (File file : list) {
-                if (file.isDirectory()) {
-                    parseFTFile(file.getAbsolutePath());
-                } else {
-                    if (!file.getName().equals("readmeft") && !file.getName().equals("readmefrcg")
-                            && !file.getName().contains("Zone.Identifier")) {
-                        parseFTFile(file.getAbsolutePath());
-                    }
+                    ftDocsList.add(ftdoc);
                 }
             }
         }
-
-        return ftDoc;
+        System.out.println("Parsing FT done...");
+        return returnParsedDocuments();
     }
 
-    public List<Document> returnParsedDocuments(String path) throws IOException{
-        parseAllFTFiles(path);
+    public List<Document> returnParsedDocuments() throws IOException{
+
         for (FTModel ftModel : ftDocsList) {
             Document document = new Document();
             document.add(new StringField("docNumber", ftModel.getDocNo(), Field.Store.YES));
@@ -75,16 +65,4 @@ public class FTParser {
 
         return ftDoc;
     }
-
-    public ArrayList<FTModel> getFtDocsList() throws IOException {
-        parseAllFTFiles(FT_DIR.getAbsolutePath());
-        return ftDocsList;
-    }
-
-    public static void main(String Args[]) throws IOException {
-        FTParser ftParser = new FTParser();
-        ftParser.parseAllFTFiles(FT_DIR.getAbsolutePath());
-        System.out.println(ftDocsList.size());
-    }
-
 }

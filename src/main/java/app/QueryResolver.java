@@ -30,6 +30,7 @@ import java.util.Map;
 public class QueryResolver {
 
     public void runQuery(Analyzer analyzer, Similarity similarity) throws Exception {
+        System.out.println("Running Queries Now...");
         Directory dir = FSDirectory.open(Paths.get(Constant.INDEX_DIRECTORY));
         IndexReader reader = DirectoryReader.open(dir);
         IndexSearcher searcher = new IndexSearcher(reader);
