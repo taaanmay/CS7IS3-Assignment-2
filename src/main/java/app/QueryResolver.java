@@ -50,7 +50,7 @@ public class QueryResolver {
                 Document doc = searcher.doc(scoreDocs[j].doc);
                 // query-id Q0 document-id rank score STANDARD
                 int rank = j + 1;
-                results.add(i + 1 + " 0 " + doc.get("docNumber") + " " + rank + " " + scoreDocs[j].score + " Standard");
+                results.add(i + 1 + " Q0 " + doc.get("docNumber") + " " + rank + " " + scoreDocs[j].score + " EnglishAnalyzerBM25");
             }
         }
 
