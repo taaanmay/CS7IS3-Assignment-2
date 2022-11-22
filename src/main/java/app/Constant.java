@@ -10,7 +10,7 @@ public interface Constant {
 
     String RESULTS_FILE = "results/out-";
 
-    String RESULTS_DIR = "results/result-new.txt";
+    String RESULTS_DIR = "results/results.txt";
 
     String FBI_DIR = "Documents/fbis";
     

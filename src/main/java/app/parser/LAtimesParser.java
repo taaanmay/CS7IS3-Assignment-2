@@ -21,6 +21,7 @@ public class LAtimesParser {
      * @throws IOException
      */
     public List<Document> parseLAtimes(String path) throws IOException {
+        System.out.println("Parsing LA Times documents");
         File[] files = new File(path).listFiles();
         List<LatimesModel> modelList = new ArrayList<>();
         for (File file : files) {
