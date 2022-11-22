@@ -29,6 +29,7 @@ public class FbisParser {
      * @throws IOException
      */
     public List<Document> parseFbis(String path) throws IOException {
+        System.out.println("Parsing FBI documents");
         File[] files = new File(path).listFiles();
         List<FbisModel> modelList = new ArrayList<>();
         for (File file : files) {
