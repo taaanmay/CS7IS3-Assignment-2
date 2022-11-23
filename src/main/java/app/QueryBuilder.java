@@ -20,29 +20,30 @@ import java.util.List;
  */
 public class QueryBuilder {
 
-    public List<String> parseQuery(String queryPath) throws IOException {
+    public List<TopicModel> parseQuery(String queryPath) throws IOException {
         File file = new File(queryPath);
         org.jsoup.nodes.Document queryDoc = Jsoup.parse(file, "UTF-8", "");
         Elements topElements = queryDoc.select("top");
         List<TopicModel> modelList = new ArrayList<>();
         for (Element e : topElements) {
             TopicModel topicModel = new TopicModel();
-//            String title = e.select("title").text();
+            topicModel.setTopicNum(e.select("num").text().split(":")[1].substring(1, 4));
+            topicModel.setTitle(e.select("title").text());
             topicModel.setDescription(e.select("desc").text().toLowerCase());
             topicModel.setNarrative(e.select("narr").text().toLowerCase());
+
             modelList.add(topicModel);
         }
 
         return getQueryList(modelList);
     }
 
-    private List<String> getQueryList(List<TopicModel> modelList) {
-        List<String> qryList = new ArrayList<>();
+    private List<TopicModel> getQueryList(List<TopicModel> modelList) {
         for (TopicModel topicModel : modelList) {
-            qryList.add(analyseQuery(topicModel.toString()));
+            topicModel.setQuery(analyseQuery(topicModel.toString()));
         }
 
-        return qryList;
+        return modelList;
     }
 
     private String analyseQuery(String qry) {

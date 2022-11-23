@@ -16,7 +16,6 @@ public class App {
         // Write out the scores and document ids in results file
         searchEngine.runQueries();
 
-
         // Shut down Search Engine after queries are run
         searchEngine.shutdown();
 

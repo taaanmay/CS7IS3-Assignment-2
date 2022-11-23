@@ -1,5 +1,6 @@
 package app.model.childModel;
 
+import app.model.QueryObject;
 import lombok.Data;
 
 /**
@@ -8,7 +9,11 @@ import lombok.Data;
  * @date 2022/11/18 15:52
  */
 @Data
-public class TopicModel {
+public class TopicModel extends QueryObject {
+
+    private String topicNum;
+
+    private String title;
 
     private String description;
 

@@ -1,7 +1,7 @@
 package app;
 
+import app.model.childModel.TopicModel;
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.document.Document;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.queryparser.classic.MultiFieldQueryParser;
@@ -39,20 +39,18 @@ public class QueryResolver {
         MultiFieldQueryParser queryParser = new MultiFieldQueryParser(Constant.searchFields, analyzer, getBoostMap());
 
         QueryBuilder queryBuilder = new QueryBuilder();
-        List<String> queries = queryBuilder.parseQuery(Constant.TOPICS);
+        List<TopicModel> queryObjects = queryBuilder.parseQuery(Constant.TOPICS);
 
         List<String> results = new ArrayList<>();
-        for (int i = 0; i < queries.size(); i ++ ) {
-            String qy = QueryParser.escape(queries.get(i).trim());
+        for (TopicModel queryObject : queryObjects) {
+            String qy = QueryParser.escape(queryObject.getQuery().trim());
             Query query = queryParser.parse(qy);
             ScoreDoc[] scoreDocs = searcher.search(query, Constant.MAX_CLAUSE).scoreDocs;
             for (int j = 0; j < scoreDocs.length; j ++ ) {
-                Document doc = searcher.doc(scoreDocs[j].doc);
+                ScoreDoc hit = scoreDocs[j];
                 // query-id Q0 document-id rank score STANDARD
                 int rank = j + 1;
-                results.add(i + 401 + " Q0 " + doc.get("docNumber") + " " + rank + " " + scoreDocs[j].score + " EnglishAnalyzerBM25");
-
-
+                results.add(queryObject.getTopicNum() + " Q0 " + searcher.doc(hit.doc).get("docNumber") + " " + rank + " " + hit.score + " EnglishAnalyzerBM25");
             }
         }
 
@@ -78,5 +76,6 @@ public class QueryResolver {
         }
         bw.flush();
         bw.close();
+        System.out.println("finish writing");
     }
 }
