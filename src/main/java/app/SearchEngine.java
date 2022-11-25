@@ -70,16 +70,16 @@ public class SearchEngine {
         LAtimesParser lAtimesParser = new LAtimesParser();
 
         List<Document> parsedDocument = ftParser.parseFTDocs(FT_DIR);
-        indexBulider.CreateIndex(parsedDocument, analyzer, similarity);
+        indexBulider.CreateIndex(parsedDocument, similarity);
 
         parsedDocument = fbisParser.parseFbis(FBI_DIR);
-        indexBulider.CreateIndex(parsedDocument, analyzer, similarity);
+        indexBulider.CreateIndex(parsedDocument, similarity);
 
         parsedDocument = fr94Parser.parseFR94(FR94_DIR);
-        indexBulider.CreateIndex(parsedDocument, analyzer, similarity);
+        indexBulider.CreateIndex(parsedDocument, similarity);
 
         parsedDocument = lAtimesParser.parseLAtimes(LATIMES_DIR);
-        indexBulider.CreateIndex(parsedDocument, analyzer, similarity);
+        indexBulider.CreateIndex(parsedDocument, similarity);
 
 
     }
