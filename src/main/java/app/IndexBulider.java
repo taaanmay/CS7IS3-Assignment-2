@@ -20,6 +20,8 @@ import static app.Constant.INDEX_DIRECTORY;
 
 public class IndexBulider {
     public void CreateIndex(List<Document> documentList, Analyzer analyzer, Similarity similarity) throws IOException {
+        removeStopWords(documentList);
+
         Directory dir = FSDirectory.open(Paths.get(INDEX_DIRECTORY));
         IndexWriterConfig indexWriterConfig = new IndexWriterConfig(analyzer);
         indexWriterConfig.setOpenMode(IndexWriterConfig.OpenMode.CREATE_OR_APPEND);
@@ -42,5 +44,9 @@ public class IndexBulider {
         List<Document> documentList = fbisParser.parseFbis(FBI_DIR);
         IndexBulider indexBulider = new IndexBulider();
         indexBulider.CreateIndex(documentList, new StandardAnalyzer(), new BM25Similarity());
+    }
+
+    public void removeStopWords(List<Document> documentList){
+        // Take in documents and remove Stopwords
     }
 }
