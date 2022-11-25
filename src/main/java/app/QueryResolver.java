@@ -9,6 +9,7 @@ import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
+import org.apache.lucene.search.similarities.BM25Similarity;
 import org.apache.lucene.search.similarities.Similarity;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
@@ -77,5 +78,10 @@ public class QueryResolver {
         bw.flush();
         bw.close();
         System.out.println("finish writing");
+    }
+
+    public static void main(String[] args) throws Exception {
+        QueryResolver queryResolver = new QueryResolver();
+        queryResolver.runQuery(new MyAnalyzer(), new BM25Similarity());
     }
 }

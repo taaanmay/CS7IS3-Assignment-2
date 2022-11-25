@@ -38,7 +38,7 @@ public class SearchEngine {
 
 
     public SearchEngine(ScoringAlgorithm algorithm){
-        this.analyzer = new EnglishAnalyzer();
+        this.analyzer = new MyAnalyzer();
         this.selectedAlgorithm = algorithm;
         this.queryResolver = new QueryResolver();
 
@@ -70,23 +70,21 @@ public class SearchEngine {
         LAtimesParser lAtimesParser = new LAtimesParser();
 
         List<Document> parsedDocument = ftParser.parseFTDocs(FT_DIR);
-        indexBulider.CreateIndex(parsedDocument, similarity);
+        indexBulider.CreateIndex(parsedDocument, analyzer, similarity);
 
         parsedDocument = fbisParser.parseFbis(FBI_DIR);
-        indexBulider.CreateIndex(parsedDocument, similarity);
+        indexBulider.CreateIndex(parsedDocument, analyzer, similarity);
 
         parsedDocument = fr94Parser.parseFR94(FR94_DIR);
-        indexBulider.CreateIndex(parsedDocument, similarity);
+        indexBulider.CreateIndex(parsedDocument, analyzer, similarity);
 
         parsedDocument = lAtimesParser.parseLAtimes(LATIMES_DIR);
-        indexBulider.CreateIndex(parsedDocument, similarity);
-
-
+        indexBulider.CreateIndex(parsedDocument, analyzer, similarity);
     }
 
     public void runQueries() throws Exception {
         System.out.println("Running Queries");
-        queryResolver.runQuery(analyzer, similarity);
+        queryResolver.runQuery(new MyAnalyzer(), similarity);
     }
 
 
