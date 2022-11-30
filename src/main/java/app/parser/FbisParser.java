@@ -18,10 +18,14 @@ import org.jsoup.select.Elements;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class FbisParser {
+
+    private static List<String> tagList = new ArrayList(
+            Arrays.asList("TI", "HT", "PHRASE", "DATE1", "ABS", "FIG"
+                    , "F", "F P=100", "F P=101", "F P=102", "F P=103", "F P=104", "F P=105", "F P=106", "F P=107",
+                    "TI", "H1", "H2", "H3", "H4", "H5", "H6", "H7", "H8", "TR", "TXT5", "HEADER", "TEXT", "AU"));
 
     /**
      * @param path fbis directory path
@@ -39,7 +43,6 @@ public class FbisParser {
                 FbisModel fbisModel = new FbisModel();
                 fbisModel.setDocNo(element.select("DOCNO").text());
                 fbisModel.setContent(element.select("TEXT").text());
-                fbisModel.setFig(element.select("F").text());
                 String title = "";
                 for (int i = 3; i <= 8; i ++ ) {
                     String cssQuery = "H" + i;
@@ -49,8 +52,6 @@ public class FbisParser {
                     }
                 }
                 fbisModel.setTitle(title);
-                fbisModel.setTxt5(element.select("TXT5").text());
-                fbisModel.setFig(element.select("FIG").text());
                 modelList.add(fbisModel);
             }
         }
@@ -63,14 +64,33 @@ public class FbisParser {
         for (FbisModel fbisModel : fbisModels) {
             Document document = new Document();
             document.add(new StringField("docNumber", fbisModel.getDocNo(), Field.Store.YES));
-            document.add(new TextField("docTitle", fbisModel.getTitle(), Field.Store.YES));
-            document.add(new TextField("docContent", fbisModel.getContent(), Field.Store.YES));
-            document.add(new TextField("docContentExt", fbisModel.getTxt5(), Field.Store.YES));
-            document.add(new TextField("docFigure", fbisModel.getFig(), Field.Store.YES));
+            document.add(new TextField("docTitle", removeNonsense(fbisModel.getTitle()), Field.Store.YES));
+            document.add(new TextField("docContent", removeNonsense(fbisModel.getContent()), Field.Store.YES));
             docList.add(document);
         }
 
         return docList;
+    }
+
+    private String removeNonsense(String data) {
+        if(data.contains("\n")) {
+            data = data.replaceAll("\n", " ").trim();
+        }
+        if (data.contains("[")) {
+            data = data.replaceAll("\\[", "").trim();
+        }
+        if (data.contains("]")) {
+            data = data.replaceAll("]", "").trim();
+        }
+        for (String tag : tagList) {
+            if(data.contains(("<" + tag + ">").toLowerCase()))
+                data = data.replaceAll("<" + tag.toLowerCase() + ">", "").trim();
+            if(data.contains(("</" + tag + ">").toLowerCase()))
+                data = data.replaceAll("</" + tag.toLowerCase() + ">", "").trim();
+        }
+
+        return data;
+
     }
 
     public static void main(String[] args) throws IOException {
