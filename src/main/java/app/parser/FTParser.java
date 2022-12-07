@@ -1,9 +1,6 @@
 package app.parser;
 
-import org.apache.lucene.document.Document;
-import org.apache.lucene.document.Field;
-import org.apache.lucene.document.StringField;
-import org.apache.lucene.document.TextField;
+import org.apache.lucene.document.*;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -40,7 +37,6 @@ public class FTParser {
 //                    String[] arrOfStr = str.split("/", 2);
 //                    ftdoc.setDate(arrOfStr[0].split(" ", 2)[1]);
                     ftdoc.setTitle(headlineText);
-                    ftdoc.setAuthor(element.select("BYLINE").text());
                     ftdoc.setDocNo(element.select("DOCNO").text());
                     ftdoc.setContent(element.select("TEXT").text());
 
@@ -57,12 +53,19 @@ public class FTParser {
         for (FTModel ftModel : ftDocsList) {
             Document document = new Document();
             document.add(new StringField("docNumber", ftModel.getDocNo(), Field.Store.YES));
-            document.add(new TextField("docTitle", ftModel.getTitle(), Field.Store.YES));
-            document.add(new TextField("docAuthor", ftModel.getAuthor(), Field.Store.YES));
-            document.add(new TextField("docContent", ftModel.getContent(), Field.Store.YES));
+            FieldType fieldType = new FieldType(TextField.TYPE_STORED);
+            fieldType.setStoreTermVectors(true);
+//            document.add(new TextField("docTitle", ftModel.getTitle(), Field.Store.YES));
+//            document.add(new TextField("docContent", ftModel.getContent(), Field.Store.YES));
+            document.add(new Field("docTitle", ftModel.getTitle(), fieldType));
+            document.add(new Field("docContent", ftModel.getContent(), fieldType));
             ftDoc.add(document);
         }
 
         return ftDoc;
+    }
+
+    public static void main(String[] args) throws IOException {
+        new FTParser().parseFTDocs("Documents/ft");
     }
 }

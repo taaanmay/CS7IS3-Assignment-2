@@ -8,10 +8,7 @@ package app.parser;
 
 
 import app.model.childModel.FbisModel;
-import org.apache.lucene.document.Document;
-import org.apache.lucene.document.Field;
-import org.apache.lucene.document.StringField;
-import org.apache.lucene.document.TextField;
+import org.apache.lucene.document.*;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -44,7 +41,7 @@ public class FbisParser {
                 fbisModel.setDocNo(element.select("DOCNO").text());
                 fbisModel.setContent(element.select("TEXT").text());
                 String title = "";
-                for (int i = 3; i <= 8; i ++ ) {
+                for (int i = 3; i <= 8; i++) {
                     String cssQuery = "H" + i;
                     String hString = element.select(cssQuery).text();
                     if (!hString.isEmpty()) {
@@ -64,8 +61,12 @@ public class FbisParser {
         for (FbisModel fbisModel : fbisModels) {
             Document document = new Document();
             document.add(new StringField("docNumber", fbisModel.getDocNo(), Field.Store.YES));
-            document.add(new TextField("docTitle", removeNonsense(fbisModel.getTitle()), Field.Store.YES));
-            document.add(new TextField("docContent", removeNonsense(fbisModel.getContent()), Field.Store.YES));
+            FieldType fieldType = new FieldType(TextField.TYPE_STORED);
+            fieldType.setStoreTermVectors(true);
+//            document.add(new TextField("docTitle", removeNonsense(fbisModel.getTitle()), Field.Store.YES));
+//            document.add(new TextField("docContent", removeNonsense(fbisModel.getContent()), Field.Store.YES));
+            document.add(new Field("docTitle", removeNonsense(fbisModel.getTitle()), fieldType));
+            document.add(new Field("docContent", removeNonsense(fbisModel.getContent()), fieldType));
             docList.add(document);
         }
 
@@ -73,7 +74,7 @@ public class FbisParser {
     }
 
     private String removeNonsense(String data) {
-        if(data.contains("\n")) {
+        if (data.contains("\n")) {
             data = data.replaceAll("\n", " ").trim();
         }
         if (data.contains("[")) {
@@ -82,11 +83,14 @@ public class FbisParser {
         if (data.contains("]")) {
             data = data.replaceAll("]", "").trim();
         }
+
         for (String tag : tagList) {
-            if(data.contains(("<" + tag + ">").toLowerCase()))
-                data = data.replaceAll("<" + tag.toLowerCase() + ">", "").trim();
-            if(data.contains(("</" + tag + ">").toLowerCase()))
-                data = data.replaceAll("</" + tag.toLowerCase() + ">", "").trim();
+            if (data.contains("<" + tag + ">")) {
+                data = data.replaceAll("<" + tag + ">", "");
+            }
+            if (data.contains("<" + tag + "/>")) {
+                data = data.replaceAll("<" + tag + "/>", "");
+            }
         }
 
         return data;

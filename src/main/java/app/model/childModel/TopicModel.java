@@ -19,6 +19,8 @@ public class TopicModel extends QueryObject {
 
     private String narrative;
 
+    private boolean relevant;
+
     @Override
     public String toString() {
         return description + " " + narrative;

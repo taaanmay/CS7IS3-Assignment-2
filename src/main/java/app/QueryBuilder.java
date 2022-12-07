@@ -31,7 +31,7 @@ public class QueryBuilder {
             topicModel.setTitle(e.select("title").text());
             topicModel.setDescription(e.select("desc").text().toLowerCase());
             topicModel.setNarrative(e.select("narr").text().toLowerCase());
-
+            topicModel.setRelevant(true);
             modelList.add(topicModel);
         }
 

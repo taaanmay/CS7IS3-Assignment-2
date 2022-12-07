@@ -1,10 +1,7 @@
 package app.parser;
 
 import app.model.childModel.LatimesModel;
-import org.apache.lucene.document.Document;
-import org.apache.lucene.document.Field;
-import org.apache.lucene.document.StringField;
-import org.apache.lucene.document.TextField;
+import org.apache.lucene.document.*;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -46,8 +43,12 @@ public class LAtimesParser {
         for (LatimesModel latimesModel : latimesModels) {
             Document document = new Document();
             document.add(new StringField("docNumber", latimesModel.getDocNo(), Field.Store.YES));
-            document.add(new TextField("docContent", latimesModel.getContent(), Field.Store.YES));
-            document.add(new TextField("docHeadline", latimesModel.getHeadline(), Field.Store.YES));
+            FieldType fieldType = new FieldType(TextField.TYPE_STORED);
+            fieldType.setStoreTermVectors(true);
+//            document.add(new TextField("docContent", latimesModel.getContent(), Field.Store.YES));
+//            document.add(new TextField("docHeadline", latimesModel.getHeadline(), Field.Store.YES));
+            document.add(new Field("docContent", latimesModel.getContent(), fieldType));
+            document.add(new Field("docTitle", latimesModel.getHeadline(), fieldType));
             docList.add(document);
         }
 

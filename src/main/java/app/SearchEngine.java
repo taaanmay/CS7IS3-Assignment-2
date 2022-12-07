@@ -7,7 +7,7 @@ import app.parser.Fr94Parser;
 import app.parser.FTParser;
 import app.parser.LAtimesParser;
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.en.EnglishAnalyzer;
+
 import org.apache.lucene.document.Document;
 import org.apache.lucene.search.similarities.*;
 import org.apache.lucene.store.Directory;
@@ -16,6 +16,7 @@ import org.apache.lucene.store.FSDirectory;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Scanner;
 
 import static app.Constant.*;
 
@@ -32,6 +33,8 @@ public class SearchEngine {
 
     private QueryResolver queryResolver;
 
+    private QueryResolverWithExp queryResolverWithExp;
+
 
     public enum ScoringAlgorithm { BM25, Classic, Boolean, LMDirichlet, DFISimilarity}
 
@@ -41,6 +44,7 @@ public class SearchEngine {
         this.analyzer = new MyAnalyzer();
         this.selectedAlgorithm = algorithm;
         this.queryResolver = new QueryResolver();
+        this.queryResolverWithExp = new QueryResolverWithExp();
 
         if(selectedAlgorithm == ScoringAlgorithm.BM25){
             this.similarity = new BM25Similarity();
@@ -84,10 +88,23 @@ public class SearchEngine {
 
     public void runQueries() throws Exception {
         System.out.println("Running Queries");
-        queryResolver.runQuery(new MyAnalyzer(), similarity);
+        System.out.println(
+                "Select query method:\n"
+                        + "1)\tnormal query\n"
+                        + "2)\tquery with expansion\n");
+        Scanner scanner = new Scanner(System.in);
+        String userResponse = scanner.nextLine();
+        switch (userResponse) {
+            case "1":
+                queryResolver.runQuery(new MyAnalyzer(), similarity);
+                break;
+            case "2":
+                queryResolverWithExp.runQuery(new MyAnalyzer(), similarity);
+                break;
+            default:
+                break;
+        }
     }
-
-
 
     public void shutdown() throws IOException {
         directory.close();

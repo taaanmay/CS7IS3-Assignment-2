@@ -24,7 +24,8 @@ public interface Constant {
 
     String TOPICS = "topics";
 
-    String[] searchFields = {"docTitle", "docAuthor", "docContent"};
+//    String[] searchFields = {"docTitle", "docAuthor", "docContent"};
+    String[] searchFields = {"docTitle", "docContent"};
 
     Integer MAX_CLAUSE = 1000;
 

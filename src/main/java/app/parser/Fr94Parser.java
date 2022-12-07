@@ -1,9 +1,6 @@
 package app.parser;
 
-import org.apache.lucene.document.Document;
-import org.apache.lucene.document.Field;
-import org.apache.lucene.document.StringField;
-import org.apache.lucene.document.TextField;
+import org.apache.lucene.document.*;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -44,8 +41,13 @@ public class Fr94Parser {
                     System.out.println(docNumber);
 
                     document.add(new StringField("docNumber", docNumber, Field.Store.YES));
-                    document.add(new TextField("docTitle", docTitle, Field.Store.YES));
-                    document.add(new TextField("docContent", docContent, Field.Store.YES));
+                    FieldType fieldType = new FieldType(TextField.TYPE_STORED);
+                    fieldType.setStoreTermVectors(true);
+//                    document.add(new TextField("docTitle", docTitle, Field.Store.YES));
+//                    document.add(new TextField("docContent", docContent, Field.Store.YES));
+                    document.add(new Field("docTitle", docTitle, fieldType));
+//                    document.add(new Field("docContent", removeNonsense(docContent), fieldType));
+                    document.add(new Field("docContent", docContent, fieldType));
                     doclist.add(document);
                 }
             }
@@ -54,4 +56,7 @@ public class Fr94Parser {
         return doclist;
     }
 
+    public static void main(String[] args) throws IOException {
+        new Fr94Parser().parseFR94("./Documents/fr94/");
+    }
 }
