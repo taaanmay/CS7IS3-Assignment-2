@@ -5,10 +5,15 @@ Group Project for CS7IS3 Assignment 2
 ### To run the application:
 `java -jar target/SearchEngine-1.0.jar`
 
+### For running on virtual machine:
 
+`java -Xmx4G -cp "target/SearchEngine-1.0.jar" app.App`
 
-stopwords.txt is from http://www.lextek.com/manuals/onix/stopwords1.html
+### For evaluation using trec_eval:
+`trec_eval/trec_eval ~/qrels results/results.txt`
 
+### If duplicates in Results file, then:
+`rm -r index/`
 
 ## Results - 
 
@@ -44,3 +49,9 @@ stopwords.txt is from http://www.lextek.com/manuals/onix/stopwords1.html
 | P_200                | 0.2020              |
 | P_500                | 0.1073              |
 | P_1000               | 0.0615              |
+
+
+
+### Stopwords:
+http://www.lextek.com/manuals/onix/stopwords1.html
+
